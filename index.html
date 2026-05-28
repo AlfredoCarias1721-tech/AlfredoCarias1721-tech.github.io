@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfredo | Ciberseguridad</title>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #00ff00; /* Verde terminal clásico */
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #terminal-box {
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            border: 1px solid #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            background-color: rgba(0, 20, 0, 0.8);
+            border-radius: 5px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #00ff00;
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal-box">
+        <span id="text"></span><span class="cursor"></span>
+    </div>
+
+    <script>
+        // Aquí puedes personalizar los mensajes que quieres que aparezcan
+        const lineasDeTexto = [
+            "Iniciando conexión segura a alfredocharlotte.me...",
+            "Resolución DNS completada con éxito.",
+            "Buscando perfil de usuario...",
+            "Usuario encontrado: Alfredo Carias.",
+            "Especialidad: Informática & Ciberseguridad.",
+            "Estado del sistema: ONLINE e inicializado."
+        ];
+        
+        let indiceLinea = 0;
+        let indiceCaracter = 0;
+        const velocidadEscritura = 50; // Milisegundos por letra
+        const pausaEntreLineas = 800; // Milisegundos de espera antes de la siguiente línea
+        const elementoTexto = document.getElementById("text");
+
+        function escribirTexto() {
+            if (indiceLinea < lineasDeTexto.length) {
+                if (indiceCaracter < lineasDeTexto[indiceLinea].length) {
+                    elementoTexto.innerHTML += lineasDeTexto[indiceLinea].charAt(indiceCaracter);
+                    indiceCaracter++;
+                    setTimeout(escribirTexto, velocidadEscritura);
+                } else {
+                    elementoTexto.innerHTML += "<br><br>"; // Salto de línea
+                    indiceLinea++;
+                    indiceCaracter = 0;
+                    setTimeout(escribirTexto, pausaEntreLineas);
+                }
+            }
+        }
+
+        // Iniciar el efecto un segundo después de cargar la página
+        window.onload = () => {
+            setTimeout(escribirTexto, 1000);
+        };
+    </script>
+
+</body>
+</html>
