@@ -1,1 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bóveda de Código y Apuntes</title>
+    <style>
+        /* ==========================================================================
+           INSTRUCCIÓN: Configuración de Colores y Tipografía (Estilo Dark Mode Técnico)
+           ========================================================================== */
+        :root {
+            --bg-principal: #0f172a;    /* Azul oscuro profundo para el fondo */
+            --bg-tarjeta: #1e293b;      /* Gris azulado para bloques y tarjetas */
+            --texto-principal: #f8fafc; /* Blanco hueso para lectura cómoda */
+            --texto-secundario: #94a3b8;/* Gris claro para descripciones y fechas */
+            --acento: #38bdf8;           /* Azul brillante para enlaces y botones */
+            --bg-codigo: #020617;        /* Fondo casi negro para los bloques de código */
+            --borde: #334155;            /* Color de las líneas divisorias */
+        }
 
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-principal);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ==========================================================================
+           INSTRUCCIÓN: Diseño del Menú Lateral (Sidebar)
+           ========================================================================== */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-tarjeta);
+            border-right: 1px solid var(--borde);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--acento);
+            border-bottom: 2px solid var(--borde);
+            padding-bottom: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        /* Botones del menú con JavaScript para filtrar */
+        .sidebar-menu button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--texto-secundario);
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu button:hover, .sidebar-menu button.active {
+            background-color: var(--bg-principal);
+            color: var(--acento);
+        }
+
+        /* ==========================================================================
+           INSTRUCCIÓN: Área de Contenido Principal (Main)
+           ========================================================================== */
+        .contenido-principal {
+            margin-left: 260px; /* Desplaza el contenido para que no lo tape la barra lateral */
+            padding: 40px;
+            width: 100%;
+            max-width: 1000px;
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .descripcion-header {
+            color: var(--texto-secundario);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Contenedor de las tarjetas de apuntes */
+        .grid-apuntes {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Estructura de cada Tarjeta de Apunte */
+        .tarjeta-apunte {
+            background-color: var(--bg-tarjeta);
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            padding: 24px;
+            display: none; /* JavaScript controlará cuáles se muestran */
+        }
+
+        /* Esta clase se usa para mostrar las tarjetas activas */
+        .tarjeta-apunte.mostrar {
+            display: block;
+        }
+
+        .categoria-tag {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--acento);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .tarjeta-apunte h3 {
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        .fecha-apunte {
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            margin-bottom: 16px;
+        }
+
+        .explicacion {
+            color: var(--texto-principal);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        /* Bloques de Código de Programación */
+        pre {
+            background-color: var(--bg-codigo);
+            border: 1px solid var(--borde);
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto; /* Permite scroll horizontal si el código es muy largo */
+            margin: 0;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        /* Adaptabilidad para Teléfonos Celulares */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--borde);
+            }
+            .contenido-principal {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>Mi Bóveda</h2>
+        <ul class="sidebar-menu">
+            <li><button class="active" onclick="filtrarCategoria('todos', this)">📁 Ver Todo</button></li>
+            <li><button onclick="filtrarCategoria('python', this)">🐍 Python</button></li>
+            <li><button onclick="filtrarCategoria('cpp', this)">💻 C++</button></li>
+            <li><button onclick="filtrarCategoria('java', this)">☕ Java</button></li>
+        </ul>
+    </nav>
+
+    <main class="contenido-principal">
+        <header>
+            <h1>Repositorio Personal de Conocimiento</h1>
+            <p class="descripcion-header">Documentación técnica, soluciones de código y apuntes de informática estructurados.</p>
+        </header>
+
+        <section class="grid-apuntes">
+
+            <article class="tarjeta-apunte mostrar" data-categoria="python">
+                <span class="categoria-tag">Python</span>
+                <h3>Automatización: Manipulación de Archivos</h3>
+                <div class="fecha-apunte">Actualizado el: 2026-05-29</div>
+                <p class="explicacion">Script útil para automatizar la lectura de archivos de texto estructurados o registros lógicos línea por línea.</p>
+                <pre><code># Ejemplo de apertura e interpretación segura de archivos
+def procesar_bitacora(ruta_archivo):
+    try:
+        with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
+            for linea in archivo:
+                # Eliminamos espacios en blanco y procesamos la cadena
+                datos = linea.strip()
+                print(f"[PROCESADO]: {datos}")
+    except FileNotFoundError:
+        print("[ERROR]: El archivo especificado no existe.")
+
+procesar_bitacora("datos.txt")</code></pre>
+            </article>
+
+            <article class="tarjeta-apunte mostrar" data-categoria="cpp">
+                <span class="categoria-tag">C++</span>
+                <h3>Estructuras de Datos: Matrices Bidimensionales</h3>
+                <div class="fecha-apunte">Actualizado el: 2026-05-29</div>
+                <p class="explicacion">Implementación estándar para declarar, rellenar y recorrer matrices dinámicas o estáticas utilizando bucles anidados.</p>
+                <pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int filas = 3, columnas = 3;
+    int matriz[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+
+    // Recorrido de la estructura de datos
+    for(int i = 0; i &lt; filas; i++) {
+        for(int j = 0; j &lt; columnas; j++) {
+            cout &lt;&lt; matriz[i][j] &lt;&lt; " ";
+        }
+        cout &lt;&lt; endl;
+    }
+    return 0;
+}</code></pre>
+            </article>
+
+            <article class="tarjeta-apunte mostrar" data-categoria="java">
+                <span class="categoria-tag">Java</span>
+                <h3>Conectividad: Manejo de Excepciones en Base de Datos</h3>
+                <div class="fecha-apunte">Actualizado el: 2026-05-29</div>
+                <p class="explicacion">Estructura fundamental utilizando bloques try-catch para capturar errores de conexión de red o sentencias SQL mal formadas.</p>
+                <pre><code>import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class AuxiliarBaseDatos {
+    public static void conectar() {
+        String url = "jdbc:mysql://localhost:3306/mi_repositorio";
+        try {
+            Connection con = DriverManager.getConnection(url, "root", "password");
+            System.out.println("Conexión establecida con éxito.");
+        } catch (SQLException e) {
+            System.out.println("Fallo crítico en la base de datos: " + e.getMessage());
+        }
+    }
+}</code></pre>
+            </article>
+
+        </section>
+    </main>
+
+    <script>
+        function filtrarCategoria(categoria, botonSeleccionado) {
+            // 1. Quitar la clase 'active' de todos los botones del menú lateral
+            const botones = document.querySelectorAll('.sidebar-menu button');
+            botones.forEach(btn => btn.classList.remove('active'));
+            
+            // 2. Asignar la clase 'active' al botón que presionó el usuario
+            botonSeleccionado.classList.add('active');
+
+            // 3. Buscar todas las tarjetas de apuntes en la página
+            const tarjetas = document.querySelectorAll('.tarjeta-apunte');
+
+            // 4. Mostrar u ocultar según el valor del atributo 'data-categoria'
+            tarjetas.forEach(tarjeta => {
+                const categoriaTarjeta = tarjeta.getAttribute('data-categoria');
+                
+                if (categoria === 'todos' || categoriaTarjeta === categoria) {
+                    tarjeta.classList.add('mostrar'); // Muestra la tarjeta
+                } else {
+                    tarjeta.classList.remove('mostrar'); // Oculta la tarjeta
+                }
+            });
+        }
+    </script>
+</body>
+</html>
