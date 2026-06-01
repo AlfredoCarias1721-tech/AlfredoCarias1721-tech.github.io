@@ -184,6 +184,35 @@
         .modal-body p code { background-color: var(--bg-codigo); padding: 3px 6px; border-radius: 6px; color: #f0f9ff; }
         .modal-body blockquote { border-left: 4px solid var(--acento); margin: 20px 0; padding-left: 20px; color: var(--texto-secundario); font-style: italic; }
 
+        /* --- Contador de Vistas --- */
+        .contador-vistas {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--borde);
+            color: var(--texto-secundario);
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        .contador-vistas:hover {
+            color: var(--acento);
+            border-color: var(--acento);
+            transform: translateY(-2px);
+        }
+        .contador-vistas svg {
+            width: 18px;
+            height: 18px;
+        }
+
         @media (max-width: 768px) {
             body { flex-direction: column; overflow: auto; height: auto; }
             .sidebar { width: auto; height: auto; border-right: none; border-bottom: 1px solid var(--borde); padding: 20px; }
@@ -193,6 +222,14 @@
     </style>
 </head>
 <body>
+
+    <div class="contador-vistas" title="Visitas totales">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <span id="num-vistas">...</span>
+    </div>
 
     <button id="btnFlotante" class="btn-flotante" onclick="toggleVisibilidad()">☰ Mostrar Menú</button>
 
@@ -366,6 +403,24 @@
         function cerrarModalFuerza() {
             document.getElementById('modal').classList.remove('activo');
         }
+        function registrarVisita() {
+            // Conectamos con una API gratuita para guardar las visitas de la bóveda
+            const namespace = 'alfredocharlotte';
+            const key = 'boveda-vistas';
+            
+            fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('num-vistas').innerText = data.count;
+                })
+                .catch(error => {
+                    console.error('Error cargando el contador:', error);
+                    document.getElementById('num-vistas').innerText = '0';
+                });
+        }
+
+
+        
     </script>
 </body>
 </html>
