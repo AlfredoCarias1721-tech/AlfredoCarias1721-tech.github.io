@@ -13,7 +13,6 @@
             --texto-principal: #f8fafc;
             --texto-secundario: #94a3b8;
             --acento: #38bdf8;
-            --acento-hover: #0284c7;
             --borde: #334155;
             --bg-codigo: #020617;
         }
@@ -25,7 +24,13 @@
             margin: 0;
             display: flex;
             height: 100vh;
-            overflow: hidden; /* Evita doble scroll */
+            overflow: hidden;
+            transition: flex-direction 0.3s ease;
+        }
+
+        /* Clase para pasar el menú a la derecha */
+        body.layout-invertido {
+            flex-direction: row-reverse;
         }
 
         /* --- Barra Lateral --- */
@@ -38,72 +43,111 @@
             flex-direction: column;
             gap: 20px;
             overflow-y: auto;
+            transition: all 0.3s ease; /* Transiciones suaves para los clics */
+        }
+
+        /* Clases dinámicas de la barra lateral controladas por los botones */
+        .sidebar.oculto {
+            width: 0;
+            padding: 0;
+            border: none;
+            overflow: hidden;
+        }
+
+        .sidebar.extendido {
+            width: 450px; /* Más espacio para leer categorías largas */
+        }
+
+        body.layout-invertido .sidebar {
+            border-right: none;
+            border-left: 1px solid var(--borde);
+        }
+
+        /* Cabecera del menú con los nuevos botones */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .sidebar h2 { margin: 0; color: var(--acento); font-size: 1.4rem; letter-spacing: 1px; }
 
-        .buscador-container input {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--bg-principal);
-            border: 1px solid var(--borde);
-            border-radius: 8px;
+        .controles-panel {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-ctrl {
+            background: var(--bg-hover);
+            border: none;
             color: var(--texto-principal);
-            box-sizing: border-box;
-            outline: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-ctrl:hover {
+            color: var(--acento);
+            background: var(--bg-principal);
+        }
+
+        /* Buscador y Menú */
+        .buscador-container input {
+            width: 100%; padding: 12px; background-color: var(--bg-principal);
+            border: 1px solid var(--borde); border-radius: 8px; color: var(--texto-principal);
+            box-sizing: border-box; outline: none; transition: 0.2s;
         }
         .buscador-container input:focus { border-color: var(--acento); }
 
         .sidebar-menu { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
         .sidebar-menu button {
-            width: 100%;
-            background: none;
-            border: none;
-            color: var(--texto-secundario);
-            text-align: left;
-            padding: 12px 16px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: 0.2s;
-            font-weight: 500;
+            width: 100%; background: none; border: none; color: var(--texto-secundario);
+            text-align: left; padding: 12px 16px; font-size: 1rem; cursor: pointer;
+            border-radius: 8px; transition: 0.2s; font-weight: 500;
         }
         .sidebar-menu button:hover, .sidebar-menu button.active {
-            background-color: var(--bg-hover);
+            background-color: var(--bg-hover); color: var(--acento);
+        }
+
+        /* Botón Flotante para recuperar el menú cuando está oculto */
+        .btn-flotante {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--bg-panel);
             color: var(--acento);
+            border: 1px solid var(--borde);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 50;
+            display: none;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: 0.2s;
+        }
+        .btn-flotante:hover { border-color: var(--acento); background: var(--bg-hover); }
+        
+        body.layout-invertido .btn-flotante {
+            left: auto;
+            right: 20px;
         }
 
         /* --- Contenido Principal --- */
-        .contenido {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-        }
-
+        .contenido { flex: 1; padding: 40px; overflow-y: auto; transition: 0.3s ease; }
         header h1 { margin-top: 0; font-size: 2.5rem; }
         .descripcion { color: var(--texto-secundario); font-size: 1.1rem; margin-bottom: 40px; }
 
-        .grid-apuntes {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
+        .grid-apuntes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
 
-        /* Tarjetas Interactivas */
         .tarjeta {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--borde);
-            border-radius: 12px;
-            padding: 24px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
+            background-color: var(--bg-panel); border: 1px solid var(--borde); border-radius: 12px;
+            padding: 24px; cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+            display: flex; flex-direction: column;
         }
-        .tarjeta:hover {
-            transform: translateY(-4px);
-            border-color: var(--acento);
-        }
+        .tarjeta:hover { transform: translateY(-4px); border-color: var(--acento); }
 
         .tarjeta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .tag { background-color: rgba(56, 189, 248, 0.15); color: var(--acento); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
@@ -111,60 +155,56 @@
         .tarjeta h3 { margin: 0 0 12px 0; font-size: 1.3rem; }
         .tarjeta p { margin: 0; color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5; flex: 1; }
 
-        /* --- Modal (Vista Detallada del Apunte) --- */
+        /* --- Modal (Vista Detallada) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(4px);
+            background-color: rgba(2, 6, 23, 0.9); backdrop-filter: blur(5px);
             display: none; justify-content: center; align-items: center;
-            z-index: 1000; opacity: 0; transition: opacity 0.3s;
+            z-index: 1000; opacity: 0; transition: opacity 0.3s ease;
         }
         .modal-overlay.activo { display: flex; opacity: 1; }
         
         .modal-contenido {
-            background-color: var(--bg-principal);
-            border: 1px solid var(--borde);
-            width: 90%; max-width: 800px; max-height: 85vh;
-            border-radius: 12px;
-            display: flex; flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background-color: #111827; border: 1px solid var(--borde);
+            width: 90%; max-width: 850px; max-height: 85vh; border-radius: 16px;
+            display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
-        .modal-header {
-            padding: 20px 30px;
-            border-bottom: 1px solid var(--borde);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .modal-header h2 { margin: 0; font-size: 1.5rem; color: var(--acento); }
-        .btn-cerrar { background: none; border: none; color: var(--texto-secundario); font-size: 1.5rem; cursor: pointer; padding: 0; transition: 0.2s; }
-        .btn-cerrar:hover { color: #f87171; }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--borde); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-panel); }
+        .modal-header h2 { margin: 0; font-size: 1.3rem; color: var(--acento); }
+        .btn-cerrar { background: var(--bg-hover); border: none; color: var(--texto-principal); font-size: 1.1rem; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: 0.2s; }
+        .btn-cerrar:hover { background-color: #ef4444; color: white; }
 
-        .modal-body {
-            padding: 30px;
-            overflow-y: auto;
-            line-height: 1.7;
-            font-size: 1.05rem;
-        }
+        .modal-body { padding: 32px; overflow-y: auto; line-height: 1.8; font-size: 1.05rem; color: #e2e8f0; }
+        .modal-body h1 { font-size: 2.2rem; margin-top: 0; margin-bottom: 8px; color: #fff; }
+        .modal-body h2 { color: #fff; margin-top: 2em; margin-bottom: 10px; font-size: 1.6rem; border-bottom: 1px solid var(--borde); padding-bottom: 8px;}
+        .modal-body h3 { color: #fff; margin-top: 1.5em; font-size: 1.3rem; }
+        .modal-body pre { background-color: var(--bg-codigo); padding: 20px; border-radius: 12px; border: 1px solid var(--borde); overflow-x: auto; margin: 20px 0; }
+        .modal-body code { font-family: 'Fira Code', 'Courier New', Courier, monospace; color: #a5f3fc; font-size: 0.9em; }
+        .modal-body p code { background-color: var(--bg-codigo); padding: 3px 6px; border-radius: 6px; color: #f0f9ff; }
+        .modal-body blockquote { border-left: 4px solid var(--acento); margin: 20px 0; padding-left: 20px; color: var(--texto-secundario); font-style: italic; }
 
-        /* Estilos para el Markdown renderizado */
-        .modal-body h2, .modal-body h3 { color: #fff; margin-top: 1.5em; }
-        .modal-body pre { background-color: var(--bg-codigo); padding: 16px; border-radius: 8px; border: 1px solid var(--borde); overflow-x: auto; }
-        .modal-body code { font-family: 'Courier New', Courier, monospace; color: #e2e8f0; font-size: 0.9em; }
-        .modal-body p code { background-color: var(--bg-codigo); padding: 2px 6px; border-radius: 4px; }
-        .modal-body blockquote { border-left: 4px solid var(--acento); margin: 0; padding-left: 16px; color: var(--texto-secundario); }
-
-        /* Adaptabilidad Móvil */
         @media (max-width: 768px) {
             body { flex-direction: column; overflow: auto; height: auto; }
             .sidebar { width: auto; height: auto; border-right: none; border-bottom: 1px solid var(--borde); padding: 20px; }
             .contenido { padding: 20px; }
+            .controles-panel { display: none; /* Ocultar controles en celular para no amontonar */ }
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <h2>Mi Bóveda</h2>
+    <button id="btnFlotante" class="btn-flotante" onclick="toggleVisibilidad()">☰ Mostrar Menú</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Mi Bóveda</h2>
+            <div class="controles-panel">
+                <button class="btn-ctrl" onclick="toggleAncho()" title="Extender Menú">↔</button>
+                <button class="btn-ctrl" onclick="toggleLado()" title="Cambiar de Lado">⇄</button>
+                <button class="btn-ctrl" onclick="toggleVisibilidad()" title="Ocultar Menú">✖</button>
+            </div>
+        </div>
         <div class="buscador-container">
             <input type="text" id="inputBusqueda" placeholder="Buscar apuntes, código, temas..." onkeyup="filtrarApuntes()">
         </div>
@@ -185,11 +225,9 @@
         <div class="modal-contenido" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2 id="modalCategoria">Categoría</h2>
-                <button class="btn-cerrar" onclick="cerrarModalFuerza()">✖</button>
+                <button class="btn-cerrar" onclick="cerrarModalFuerza()">Cerrar ✖</button>
             </div>
             <div class="modal-body">
-                <h1 id="modalTitulo" style="margin-top:0; margin-bottom: 8px;">Título</h1>
-                <div class="fecha" id="modalFecha" style="margin-bottom: 24px;"></div>
                 <div id="modalContenidoMarkdown"></div>
             </div>
         </div>
@@ -200,40 +238,63 @@
     <script>
         let categoriaActiva = 'todos';
 
-        // 1. Iniciar la página
+        // --- NUEVAS FUNCIONES DE DISEÑO ---
+        function toggleVisibilidad() {
+            const sidebar = document.getElementById('sidebar');
+            const btnFlotante = document.getElementById('btnFlotante');
+            
+            sidebar.classList.toggle('oculto');
+            
+            // Si el menú está oculto, mostramos el botón flotante
+            if (sidebar.classList.contains('oculto')) {
+                btnFlotante.style.display = 'block';
+            } else {
+                btnFlotante.style.display = 'none';
+            }
+        }
+
+        function toggleAncho() {
+            document.getElementById('sidebar').classList.toggle('extendido');
+        }
+
+        function toggleLado() {
+            document.body.classList.toggle('layout-invertido');
+        }
+        // ----------------------------------
+
         document.addEventListener('DOMContentLoaded', () => {
+            if (typeof marked === 'undefined') {
+                console.error("No se pudo cargar la librería 'marked.js'.");
+            }
             generarMenu();
             renderizarTarjetas(misApuntes);
         });
 
-        // 2. Extraer categorías únicas y crear el menú
         function generarMenu() {
             const menu = document.getElementById('menuCategorias');
+            if(!menu) return;
             const categoriasUnicas = [...new Set(misApuntes.map(apunte => apunte.categoria))];
             
-            // Botón por defecto
             menu.innerHTML = `<li><button class="active" id="btn-todos" onclick="cambiarCategoria('todos')">📁 Ver Todo</button></li>`;
             
-            // Crear botón por cada categoría encontrada
             categoriasUnicas.forEach(cat => {
                 menu.innerHTML += `<li><button id="btn-${cat}" onclick="cambiarCategoria('${cat}')">🔖 ${cat}</button></li>`;
             });
         }
 
-        // 3. Crear las tarjetas en pantalla
         function renderizarTarjetas(datos) {
             const contenedor = document.getElementById('contenedorApuntes');
-            contenedor.innerHTML = ''; // Limpiar contenedor
+            if(!contenedor) return;
+            contenedor.innerHTML = ''; 
 
             if(datos.length === 0) {
-                contenedor.innerHTML = '<p style="color: var(--texto-secundario)">No se encontraron apuntes.</p>';
+                contenedor.innerHTML = '<p style="color: var(--texto-secundario); grid-column: 1/-1; text-align: center; margin-top: 40px;">No se encontraron apuntes.</p>';
                 return;
             }
 
             datos.forEach(apunte => {
                 const tarjeta = document.createElement('div');
                 tarjeta.className = 'tarjeta';
-                // Al hacer clic, abre el modal y le pasa el ID del apunte
                 tarjeta.onclick = () => abrirModal(apunte.id);
                 
                 tarjeta.innerHTML = `
@@ -248,19 +309,18 @@
             });
         }
 
-        // 4. Sistema de Filtrado Combinado (Por Categoría y Búsqueda)
         function cambiarCategoria(categoria) {
             categoriaActiva = categoria;
-            
-            // Actualizar diseño de botones
             document.querySelectorAll('.sidebar-menu button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${categoria}`).classList.add('active');
-            
+            const botonActual = document.getElementById(`btn-${categoria}`);
+            if(botonActual) botonActual.classList.add('active');
             filtrarApuntes();
         }
 
         function filtrarApuntes() {
-            const textoBusqueda = document.getElementById('inputBusqueda').value.toLowerCase();
+            const input = document.getElementById('inputBusqueda');
+            if(!input) return;
+            const textoBusqueda = input.value.toLowerCase();
             
             const resultados = misApuntes.filter(apunte => {
                 const coincideCategoria = (categoriaActiva === 'todos' || apunte.categoria === categoriaActiva);
@@ -271,31 +331,38 @@
                 );
                 return coincideCategoria && coincideTexto;
             });
-
             renderizarTarjetas(resultados);
         }
 
-        // 5. Lógica del Modal (Vista Detallada)
         function abrirModal(id) {
             const apunte = misApuntes.find(a => a.id === id);
+            if(!apunte) return;
             
+            const contenedorContenido = document.getElementById('modalContenidoMarkdown');
             document.getElementById('modalCategoria').innerText = apunte.categoria;
-            document.getElementById('modalTitulo').innerText = apunte.titulo;
-            document.getElementById('modalFecha').innerText = `Actualizado: ${apunte.fecha}`;
             
-            // Renderizar Markdown a HTML usando la librería
-            document.getElementById('modalContenidoMarkdown').innerHTML = marked.parse(apunte.contenido);
+            let htmlFinal = `
+                <h1 style="margin-top:0; margin-bottom: 8px;">${apunte.titulo}</h1>
+                <div class="fecha" style="margin-bottom: 24px;">Actualizado: ${apunte.fecha}</div>
+            `;
+
+            if (typeof marked !== 'undefined') {
+                try {
+                    htmlFinal += marked.parse(apunte.contenido);
+                } catch (error) {
+                    htmlFinal += `<p style="color:red">Error al formatear Markdown.</p><pre>${apunte.contenido}</pre>`;
+                }
+            } else {
+                htmlFinal += `<p style="color:var(--texto-secundario); font-style:italic;">(Formato Markdown no disponible)</p><pre style="white-space: pre-wrap; background:none; border:none; padding:0;">${apunte.contenido}</pre>`;
+            }
             
+            contenedorContenido.innerHTML = htmlFinal;
             document.getElementById('modal').classList.add('activo');
         }
 
         function cerrarModal(evento) {
-            // Cierra si haces clic en el fondo oscuro
-            if (evento.target.id === 'modal') {
-                document.getElementById('modal').classList.remove('activo');
-            }
+            if (evento.target.id === 'modal') document.getElementById('modal').classList.remove('activo');
         }
-
         function cerrarModalFuerza() {
             document.getElementById('modal').classList.remove('activo');
         }
