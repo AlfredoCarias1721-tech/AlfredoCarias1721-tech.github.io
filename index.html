@@ -3,307 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bóveda de Código y Apuntes</title>
+    <title>Bóveda de Conocimiento</title>
+    <script src="[https://cdn.jsdelivr.net/npm/marked/marked.min.js](https://cdn.jsdelivr.net/npm/marked/marked.min.js)"></script>
     <style>
-        /* ==========================================================================
-           INSTRUCCIÓN: Configuración de Colores y Tipografía (Estilo Dark Mode Técnico)
-           ========================================================================== */
         :root {
-            --bg-principal: #0f172a;    /* Azul oscuro profundo para el fondo */
-            --bg-tarjeta: #1e293b;      /* Gris azulado para bloques y tarjetas */
-            --texto-principal: #f8fafc; /* Blanco hueso para lectura cómoda */
-            --texto-secundario: #94a3b8;/* Gris claro para descripciones y fechas */
-            --acento: #38bdf8;           /* Azul brillante para enlaces y botones */
-            --bg-codigo: #020617;        /* Fondo casi negro para los bloques de código */
-            --borde: #334155;            /* Color de las líneas divisorias */
+            --bg-principal: #0f172a;
+            --bg-panel: #1e293b;
+            --bg-hover: #334155;
+            --texto-principal: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --acento: #38bdf8;
+            --acento-hover: #0284c7;
+            --borde: #334155;
+            --bg-codigo: #020617;
         }
 
         body {
             background-color: var(--bg-principal);
             color: var(--texto-principal);
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
-            padding: 0;
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden; /* Evita doble scroll */
         }
 
-        /* ==========================================================================
-           INSTRUCCIÓN: Diseño del Menú Lateral (Sidebar)
-           ========================================================================== */
+        /* --- Barra Lateral --- */
         .sidebar {
-            width: 260px;
-            background-color: var(--bg-tarjeta);
+            width: 280px;
+            background-color: var(--bg-panel);
             border-right: 1px solid var(--borde);
             padding: 24px;
             display: flex;
             flex-direction: column;
-            position: fixed;
-            height: 100vh;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 { margin: 0; color: var(--acento); font-size: 1.4rem; letter-spacing: 1px; }
+
+        .buscador-container input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-principal);
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            color: var(--texto-principal);
             box-sizing: border-box;
+            outline: none;
         }
+        .buscador-container input:focus { border-color: var(--acento); }
 
-        .sidebar h2 {
-            font-size: 1.2rem;
-            margin-top: 0;
-            margin-bottom: 24px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--acento);
-            border-bottom: 2px solid var(--borde);
-            padding-bottom: 10px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 8px;
-        }
-
-        /* Botones del menú con JavaScript para filtrar */
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
         .sidebar-menu button {
             width: 100%;
             background: none;
             border: none;
             color: var(--texto-secundario);
             text-align: left;
-            padding: 10px 12px;
+            padding: 12px 16px;
             font-size: 1rem;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s ease;
+            border-radius: 8px;
+            transition: 0.2s;
+            font-weight: 500;
         }
-
         .sidebar-menu button:hover, .sidebar-menu button.active {
-            background-color: var(--bg-principal);
+            background-color: var(--bg-hover);
             color: var(--acento);
         }
 
-        /* ==========================================================================
-           INSTRUCCIÓN: Área de Contenido Principal (Main)
-           ========================================================================== */
-        .contenido-principal {
-            margin-left: 260px; /* Desplaza el contenido para que no lo tape la barra lateral */
+        /* --- Contenido Principal --- */
+        .contenido {
+            flex: 1;
             padding: 40px;
-            width: 100%;
-            max-width: 1000px;
-            box-sizing: border-box;
+            overflow-y: auto;
         }
 
-        header h1 {
-            font-size: 2.2rem;
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
+        header h1 { margin-top: 0; font-size: 2.5rem; }
+        .descripcion { color: var(--texto-secundario); font-size: 1.1rem; margin-bottom: 40px; }
 
-        .descripcion-header {
-            color: var(--texto-secundario);
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
-
-        /* Contenedor de las tarjetas de apuntes */
         .grid-apuntes {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 24px;
         }
 
-        /* Estructura de cada Tarjeta de Apunte */
-        .tarjeta-apunte {
-            background-color: var(--bg-tarjeta);
+        /* Tarjetas Interactivas */
+        .tarjeta {
+            background-color: var(--bg-panel);
             border: 1px solid var(--borde);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 24px;
-            display: none; /* JavaScript controlará cuáles se muestran */
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .tarjeta:hover {
+            transform: translateY(-4px);
+            border-color: var(--acento);
         }
 
-        /* Esta clase se usa para mostrar las tarjetas activas */
-        .tarjeta-apunte.mostrar {
-            display: block;
-        }
+        .tarjeta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .tag { background-color: rgba(56, 189, 248, 0.15); color: var(--acento); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .fecha { font-size: 0.8rem; color: var(--texto-secundario); }
+        .tarjeta h3 { margin: 0 0 12px 0; font-size: 1.3rem; }
+        .tarjeta p { margin: 0; color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5; flex: 1; }
 
-        .categoria-tag {
-            background-color: rgba(56, 189, 248, 0.1);
-            color: var(--acento);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
+        /* --- Modal (Vista Detallada del Apunte) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; transition: opacity 0.3s;
         }
-
-        .tarjeta-apunte h3 {
-            margin-top: 12px;
-            margin-bottom: 8px;
-            font-size: 1.4rem;
-        }
-
-        .fecha-apunte {
-            font-size: 0.85rem;
-            color: var(--texto-secundario);
-            margin-bottom: 16px;
-        }
-
-        .explicacion {
-            color: var(--texto-principal);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        /* Bloques de Código de Programación */
-        pre {
-            background-color: var(--bg-codigo);
+        .modal-overlay.activo { display: flex; opacity: 1; }
+        
+        .modal-contenido {
+            background-color: var(--bg-principal);
             border: 1px solid var(--borde);
-            border-radius: 6px;
-            padding: 16px;
-            overflow-x: auto; /* Permite scroll horizontal si el código es muy largo */
-            margin: 0;
+            width: 90%; max-width: 800px; max-height: 85vh;
+            border-radius: 12px;
+            display: flex; flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        code {
-            font-family: 'Fira Code', 'Courier New', Courier, monospace;
-            font-size: 0.95rem;
-            color: #e2e8f0;
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--borde);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-header h2 { margin: 0; font-size: 1.5rem; color: var(--acento); }
+        .btn-cerrar { background: none; border: none; color: var(--texto-secundario); font-size: 1.5rem; cursor: pointer; padding: 0; transition: 0.2s; }
+        .btn-cerrar:hover { color: #f87171; }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            line-height: 1.7;
+            font-size: 1.05rem;
         }
 
-        /* Adaptabilidad para Teléfonos Celulares */
+        /* Estilos para el Markdown renderizado */
+        .modal-body h2, .modal-body h3 { color: #fff; margin-top: 1.5em; }
+        .modal-body pre { background-color: var(--bg-codigo); padding: 16px; border-radius: 8px; border: 1px solid var(--borde); overflow-x: auto; }
+        .modal-body code { font-family: 'Courier New', Courier, monospace; color: #e2e8f0; font-size: 0.9em; }
+        .modal-body p code { background-color: var(--bg-codigo); padding: 2px 6px; border-radius: 4px; }
+        .modal-body blockquote { border-left: 4px solid var(--acento); margin: 0; padding-left: 16px; color: var(--texto-secundario); }
+
+        /* Adaptabilidad Móvil */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                border-right: none;
-                border-bottom: 1px solid var(--borde);
-            }
-            .contenido-principal {
-                margin-left: 0;
-                padding: 20px;
-            }
+            body { flex-direction: column; overflow: auto; height: auto; }
+            .sidebar { width: auto; height: auto; border-right: none; border-bottom: 1px solid var(--borde); padding: 20px; }
+            .contenido { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
+    <aside class="sidebar">
         <h2>Mi Bóveda</h2>
-        <ul class="sidebar-menu">
-            <li><button class="active" onclick="filtrarCategoria('todos', this)">📁 Ver Todo</button></li>
-            <li><button onclick="filtrarCategoria('python', this)">🐍 Python</button></li>
-            <li><button onclick="filtrarCategoria('cpp', this)">💻 C++</button></li>
-            <li><button onclick="filtrarCategoria('java', this)">☕ Java</button></li>
-        </ul>
-    </nav>
+        <div class="buscador-container">
+            <input type="text" id="inputBusqueda" placeholder="Buscar apuntes, código, temas..." onkeyup="filtrarApuntes()">
+        </div>
+        <ul class="sidebar-menu" id="menuCategorias">
+            </ul>
+    </aside>
 
-    <main class="contenido-principal">
+    <main class="contenido">
         <header>
-            <h1>Repositorio Personal de Conocimiento</h1>
-            <p class="descripcion-header">Documentación técnica, soluciones de código y apuntes de informática estructurados.</p>
+            <h1>Repositorio Central</h1>
+            <p class="descripcion">Documentación técnica renderizada interactivamente.</p>
         </header>
-
-        <section class="grid-apuntes">
-
-            <article class="tarjeta-apunte mostrar" data-categoria="python">
-                <span class="categoria-tag">Python</span>
-                <h3>Automatización: Manipulación de Archivos</h3>
-                <div class="fecha-apunte">Actualizado el: 2026-05-29</div>
-                <p class="explicacion">Script útil para automatizar la lectura de archivos de texto estructurados o registros lógicos línea por línea.</p>
-                <pre><code># Ejemplo de apertura e interpretación segura de archivos
-def procesar_bitacora(ruta_archivo):
-    try:
-        with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
-            for linea in archivo:
-                # Eliminamos espacios en blanco y procesamos la cadena
-                datos = linea.strip()
-                print(f"[PROCESADO]: {datos}")
-    except FileNotFoundError:
-        print("[ERROR]: El archivo especificado no existe.")
-
-procesar_bitacora("datos.txt")
-                Saquen a Javier del Aula.jpg</code></pre>
-            </article>
-
-            <article class="tarjeta-apunte mostrar" data-categoria="cpp">
-                <span class="categoria-tag">C++</span>
-                <h3>Estructuras de Datos: Matrices Bidimensionales</h3>
-                <div class="fecha-apunte">Actualizado el: 2026-05-29</div>
-                <p class="explicacion">Implementación estándar para declarar, rellenar y recorrer matrices dinámicas o estáticas utilizando bucles anidados.</p>
-                <pre><code>#include &lt;iostream&gt;
-using namespace std;
-
-int main() {
-    int filas = 3, columnas = 3;
-    int matriz[3][3] = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9}
-    };
-
-    // Recorrido de la estructura de datos
-    for(int i = 0; i &lt; filas; i++) {
-        for(int j = 0; j &lt; columnas; j++) {
-            cout &lt;&lt; matriz[i][j] &lt;&lt; " ";
-        }
-        cout &lt;&lt; endl;
-    }
-    return 0;
-}</code></pre>
-            </article>
-
-            <article class="tarjeta-apunte mostrar" data-categoria="java">
-                <span class="categoria-tag">Java</span>
-                <h3>Conectividad: Manejo de Excepciones en Base de Datos</h3>
-                <div class="fecha-apunte">Actualizado el: 2026-05-29</div>
-                <p class="explicacion">Estructura fundamental utilizando bloques try-catch para capturar errores de conexión de red o sentencias SQL mal formadas.</p>
-                <pre><code>import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-public class AuxiliarBaseDatos {
-    public static void conectar() {
-        String url = "jdbc:mysql://localhost:3306/mi_repositorio";
-        try {
-            Connection con = DriverManager.getConnection(url, "root", "password");
-            System.out.println("Conexión establecida con éxito.");
-        } catch (SQLException e) {
-            System.out.println("Fallo crítico en la base de datos: " + e.getMessage());
-        }
-    }
-}</code></pre>
-            </article>
-
-        </section>
+        <section class="grid-apuntes" id="contenedorApuntes">
+            </section>
     </main>
 
+    <div class="modal-overlay" id="modal" onclick="cerrarModal(event)">
+        <div class="modal-contenido" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modalCategoria">Categoría</h2>
+                <button class="btn-cerrar" onclick="cerrarModalFuerza()">✖</button>
+            </div>
+            <div class="modal-body">
+                <h1 id="modalTitulo" style="margin-top:0; margin-bottom: 8px;">Título</h1>
+                <div class="fecha" id="modalFecha" style="margin-bottom: 24px;"></div>
+                <div id="modalContenidoMarkdown"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="apuntes.js"></script>
+    
     <script>
-        function filtrarCategoria(categoria, botonSeleccionado) {
-            // 1. Quitar la clase 'active' de todos los botones del menú lateral
-            const botones = document.querySelectorAll('.sidebar-menu button');
-            botones.forEach(btn => btn.classList.remove('active'));
+        let categoriaActiva = 'todos';
+
+        // 1. Iniciar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            generarMenu();
+            renderizarTarjetas(misApuntes);
+        });
+
+        // 2. Extraer categorías únicas y crear el menú
+        function generarMenu() {
+            const menu = document.getElementById('menuCategorias');
+            const categoriasUnicas = [...new Set(misApuntes.map(apunte => apunte.categoria))];
             
-            // 2. Asignar la clase 'active' al botón que presionó el usuario
-            botonSeleccionado.classList.add('active');
-
-            // 3. Buscar todas las tarjetas de apuntes en la página
-            const tarjetas = document.querySelectorAll('.tarjeta-apunte');
-
-            // 4. Mostrar u ocultar según el valor del atributo 'data-categoria'
-            tarjetas.forEach(tarjeta => {
-                const categoriaTarjeta = tarjeta.getAttribute('data-categoria');
-                
-                if (categoria === 'todos' || categoriaTarjeta === categoria) {
-                    tarjeta.classList.add('mostrar'); // Muestra la tarjeta
-                } else {
-                    tarjeta.classList.remove('mostrar'); // Oculta la tarjeta
-                }
+            // Botón por defecto
+            menu.innerHTML = `<li><button class="active" id="btn-todos" onclick="cambiarCategoria('todos')">📁 Ver Todo</button></li>`;
+            
+            // Crear botón por cada categoría encontrada
+            categoriasUnicas.forEach(cat => {
+                menu.innerHTML += `<li><button id="btn-${cat}" onclick="cambiarCategoria('${cat}')">🔖 ${cat}</button></li>`;
             });
+        }
+
+        // 3. Crear las tarjetas en pantalla
+        function renderizarTarjetas(datos) {
+            const contenedor = document.getElementById('contenedorApuntes');
+            contenedor.innerHTML = ''; // Limpiar contenedor
+
+            if(datos.length === 0) {
+                contenedor.innerHTML = '<p style="color: var(--texto-secundario)">No se encontraron apuntes.</p>';
+                return;
+            }
+
+            datos.forEach(apunte => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'tarjeta';
+                // Al hacer clic, abre el modal y le pasa el ID del apunte
+                tarjeta.onclick = () => abrirModal(apunte.id);
+                
+                tarjeta.innerHTML = `
+                    <div class="tarjeta-header">
+                        <span class="tag">${apunte.categoria}</span>
+                        <span class="fecha">${apunte.fecha}</span>
+                    </div>
+                    <h3>${apunte.titulo}</h3>
+                    <p>${apunte.resumen}</p>
+                `;
+                contenedor.appendChild(tarjeta);
+            });
+        }
+
+        // 4. Sistema de Filtrado Combinado (Por Categoría y Búsqueda)
+        function cambiarCategoria(categoria) {
+            categoriaActiva = categoria;
+            
+            // Actualizar diseño de botones
+            document.querySelectorAll('.sidebar-menu button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${categoria}`).classList.add('active');
+            
+            filtrarApuntes();
+        }
+
+        function filtrarApuntes() {
+            const textoBusqueda = document.getElementById('inputBusqueda').value.toLowerCase();
+            
+            const resultados = misApuntes.filter(apunte => {
+                const coincideCategoria = (categoriaActiva === 'todos' || apunte.categoria === categoriaActiva);
+                const coincideTexto = (
+                    apunte.titulo.toLowerCase().includes(textoBusqueda) || 
+                    apunte.resumen.toLowerCase().includes(textoBusqueda) ||
+                    apunte.contenido.toLowerCase().includes(textoBusqueda)
+                );
+                return coincideCategoria && coincideTexto;
+            });
+
+            renderizarTarjetas(resultados);
+        }
+
+        // 5. Lógica del Modal (Vista Detallada)
+        function abrirModal(id) {
+            const apunte = misApuntes.find(a => a.id === id);
+            
+            document.getElementById('modalCategoria').innerText = apunte.categoria;
+            document.getElementById('modalTitulo').innerText = apunte.titulo;
+            document.getElementById('modalFecha').innerText = `Actualizado: ${apunte.fecha}`;
+            
+            // Renderizar Markdown a HTML usando la librería
+            document.getElementById('modalContenidoMarkdown').innerHTML = marked.parse(apunte.contenido);
+            
+            document.getElementById('modal').classList.add('activo');
+        }
+
+        function cerrarModal(evento) {
+            // Cierra si haces clic en el fondo oscuro
+            if (evento.target.id === 'modal') {
+                document.getElementById('modal').classList.remove('activo');
+            }
+        }
+
+        function cerrarModalFuerza() {
+            document.getElementById('modal').classList.remove('activo');
         }
     </script>
 </body>
