@@ -43,7 +43,7 @@ setInterval(updateClock, 1000);
 setTimeout(() => {
   if (modal) modal.classList.remove('hidden');
   clockState = 'paused';
-}, 5000);
+}, 15000);
 
 function activateBasicPlan() {
   if (modal) modal.classList.add('hidden');
