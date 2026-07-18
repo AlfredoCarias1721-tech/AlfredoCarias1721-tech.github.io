@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reloj Profesional</title>
+    <style>
+      #pricing-modal.hidden, #payment-modal.hidden {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+      #resume-basic-btn.hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <main class="clock-wrapper">
+        <h1 id="time-display">00:00:00</h1>
+        <h2 id="date-display">CARGANDO...</h2>
+        
+        <button id="resume-basic-btn" class="hidden">Usar plan actual</button>
+
+        <div class="status-bar">
+          <span>Juticalpa / 24°C</span>
+          <span class="separator">—</span>
+          <span id="latency-display">Latencia 18ms</span>
+          <span class="separator">—</span>
+          <span id="build-display">Build 0.4.2-a</span>
+        </div>
+      </main>
+      <footer class="bottom-text">
+        Equipos que operan cronológicamente.
+      </footer>
+    </div>
+
+    <div id="pricing-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+        
+        <h2>Tu periodo de prueba cronológica ha expirado.</h2>
+        <p class="subtitle">Has alcanzado el límite de acceso temporal no remunerado. Por favor, selecciona un plan para seguir observando la realidad.</p>
+
+        <div class="pricing-cards">
+          <div class="card">
+            <h3>BÁSICO</h3>
+            <div class="price"><strong>$0</strong><span>/mes</span></div>
+            <ul>
+              <li>Visualización de horas</li>
+              <li>Minutos con retardo</li>
+              <li>Segundos</li>
+              <li>Soporte comunitario</li>
+            </ul>
+            <button id="basic-plan-btn" class="btn-outline">Plan Actual</button>
+          </div>
+
+          <div class="card pro">
+            <div class="badge">Recomendado</div>
+            <h3>PRO</h3>
+            <div class="price"><strong>$29</strong><span>/mes</span></div>
+            <ul>
+              <li>Minutos en tiempo real</li>
+              <li>Sincronización prioritaria</li>
+              <li>Acceso anticipado a futuras horas</li>
+              <li>Sin anuncios temporales</li>
+            </ul>
+            <button id="pro-plan-btn" class="btn-solid">Elegir Plan</button>
+          </div>
+
+          <div class="card">
+            <h3>ENTERPRISE</h3>
+            <div class="price"><strong>A medida</strong></div>
+            <ul>
+              <li>Segundos de alta fidelidad</li>
+              <li>Infraestructura multi-zona</li>
+              <li>Cronología SOC 2</li>
+              <li>Gestor de Éxito Temporal</li>
+            </ul>
+            <a href="https://github.com/AlfredoCarias1721-tech" target="_blank" class="btn-outline" style="text-decoration: none; text-align: center; display: block; width: 100%; padding: 12px 0; border-radius: 6px; box-sizing: border-box; cursor: pointer;">Contactar a ventas</a>
+          </div>
+        </div>
+
+        <p class="footer-note">Facturación gestionada via ChronoPay. Los segundos no son reembolsables.</p>
+      </div>
+    </div>
+
+    <div id="payment-modal" class="modal-overlay hidden">
+      <div class="modal-content payment-content">
+        <button id="close-payment-btn" class="close-btn">&times;</button>
+        <h2>Finalizar Compra</h2>
+        <p>Plan PRO - $29/mes. Complete sus datos de facturación.</p>
+        
+        <form id="fake-payment-form">
+          <div class="input-group">
+            <label for="card-name">Nombre en la tarjeta</label>
+            <input type="text" id="card-name" placeholder="Ej. John Titor" required pattern="[A-Za-zÀ-ÿ\s]+" title="Por favor, introduzca solo letras y espacios.">
+          </div>
+          
+          <div class="input-group">
+            <label for="card-number">Número de tarjeta</label>
+            <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required pattern="\d{16}" title="Debe contener exactamente 16 números, sin letras ni espacios." maxlength="16">
+          </div>
+          
+          <div class="row-inputs">
+            <div class="input-group">
+              <label for="card-exp">Expiración (MM/AA)</label>
+              <input type="text" id="card-exp" placeholder="12/28" required pattern="\d{2}/\d{2}" title="El formato debe ser MM/AA (Ej. 12/28)" maxlength="5">
+            </div>
+            <div class="input-group">
+              <label for="card-cvv">CVV</label>
+              <input type="password" id="card-cvv" placeholder="123" required pattern="\d{3,4}" title="Debe contener 3 o 4 números." maxlength="4">
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-solid fake-pay-btn">Procesar Pago Seguro</button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
